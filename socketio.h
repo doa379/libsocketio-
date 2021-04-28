@@ -10,8 +10,9 @@ template<typename T>
 class SocketIO
 {
   std::unique_ptr<T> c;
-  std::unique_ptr<std::thread> th;
+  Cb cb;
   bool running;
+  std::unique_ptr<std::thread> th;
 
 public:
   SocketIO(const float, const std::string &, const unsigned, const Cb &);
@@ -20,3 +21,6 @@ public:
   void run(REQUEST, const std::string &, const std::vector<std::string> &, const std::string &, const unsigned);
   void kill(void);
 };
+
+template class SocketIO<HttpClient>;
+template class SocketIO<HttpsClient>;

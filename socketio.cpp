@@ -1,11 +1,10 @@
 #include "socketio.h"
 
 template<typename T>
-SocketIO<T>::SocketIO(const float httpver, const std::string &host, const unsigned port, const Cb &cb)
+SocketIO<T>::SocketIO(const float httpver, const std::string &host, const unsigned port, const Cb &cb) :
+  c(std::make_unique<T>(httpver, host, port)), cb(cb), running(1)
 {
-  c = std::make_unique<T>(httpver, host, port);
-  running = 1;
-  c->set_cb(cb);
+
 }
 
 template<typename T>
@@ -23,14 +22,15 @@ bool SocketIO<T>::connect(void)
 }
 
 template<typename T>
-void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<std::string> &H, const std::string &DATA, const unsigned waitms)
+void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<std::string> &H, const std::string &data, const unsigned waitms)
 {
   th = std::make_unique<std::thread>([&] {
     while (running)
     {
-      c->sendreq(req, endp, H, DATA);
+      c->sendreq(req, endp, H, data);
       c->recvreq();
       cb(c->get_response());
+      std::this_thread::sleep_for(std::chrono::milliseconds(waitms));
     }
   });
 }

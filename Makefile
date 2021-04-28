@@ -10,7 +10,7 @@ SRC_TEST0 = client_example.cpp
 OBJ_TEST0 = ${SRC_TEST0:.cpp=.o}
 
 CC = c++
-CFLAGS = -std=c++14 -c -Wall -fPIE -fPIC -pedantic -O3 ${INCS}
+CFLAGS = -std=c++14 -c -Wall -fPIE -fPIC -pedantic -O3 ${INCS} -g
 LDFLAGS += ${LIBSPATH}
 
 all: libsocketio++.so \
@@ -27,7 +27,6 @@ libsocketio++.so: ${OBJ_LIBSOCKETIO}
 client_example: ${OBJ_TEST0}
 		@echo CC -o $@
 		@${CC} -o $@ ${OBJ_TEST0} ${LDFLAGS} -l socketio++
-
 clean:
 		@echo Cleaning
 		@rm -f ${OBJ_LIBSOCKETIO} ${OBJ_TEST0}
