@@ -1,7 +1,7 @@
 LOCAL = ../
 LIBSPATH = -L ${LOCAL}/libsocketio++ -Wl,-R$(LOCAL)/libsocketio++ '-Wl,-R$$ORIGIN'
 INCS = -I /usr/local/include -I ${LOCAL}
-LIBS = -l socket++ -l pthread
+LIBS = -l socket++
 
 SRC_LIBSOCKETIO = socketio.cpp
 OBJ_LIBSOCKETIO = ${SRC_LIBSOCKETIO:.cpp=.o}

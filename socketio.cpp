@@ -1,3 +1,5 @@
+#include <thread>
+#include <chrono>
 #include "socketio.h"
 
 template<typename T>
@@ -11,8 +13,6 @@ template<typename T>
 SocketIO<T>::~SocketIO(void)
 {
   kill();
-  if (th->joinable())
-    th->join();
 }
 
 template<typename T>
@@ -30,15 +30,18 @@ void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<st
     }
   };
 
-  th = std::make_unique<std::thread>([&] {
-    while (is_running() && 1/*time_now - time_init < expiry*/)
-    {
-      c->sendreq(req, endp, H, data);
-      c->recvreq();
-      cb(c->get_response());
-      std::this_thread::sleep_for(std::chrono::milliseconds(waitms));
-    }
-  });
+  auto now { std::chrono::system_clock::now() };
+  auto init_ms { std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) },
+    now_ms = init_ms;
+  while (is_running() && (expiry < 0 || now_ms.count() - init_ms.count() < expiry))
+  {
+    c->sendreq(req, endp, H, data);
+    c->recvreq();
+    cb(c->get_response());
+    std::this_thread::sleep_for(std::chrono::milliseconds(waitms));
+    auto now { std::chrono::system_clock::now() };
+    now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+  }
 }
 
 template<typename T>

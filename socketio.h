@@ -4,7 +4,6 @@
 #include <functional>
 #include <memory>
 #include <libsocket++/socket.h>
-#include <thread>
 #include <mutex>
 
 template<typename T>
@@ -13,7 +12,6 @@ class SocketIO
   std::unique_ptr<T> c;
   Cb cb;
   bool running;
-  std::unique_ptr<std::thread> th;
   std::mutex mtx;
 
 public:

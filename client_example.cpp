@@ -27,7 +27,6 @@ int main(const int argc, const char *argv[])
   auto cb { [](const std::string &buffer) { std::cout << buffer << std::endl; } };
   SocketIO<HttpsClient> c(1.1, HOST, 443, cb);
   c.connect();
-  c.run(POST, "/subscribe", H, DATA, 250, 250 * 8);
-  while (1); 
+  c.run(POST, "/subscribe", H, DATA, 250, 20 * 4 * 250);
   return 0;
 }
