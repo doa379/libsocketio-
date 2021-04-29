@@ -9,10 +9,13 @@ int main(const int argc, const char *argv[])
     return 1;
   }
 
-  FILE *fp = fopen("/home/jh/workspace/fxcm/demo_token", "r");
   char TOKEN[64];
-  fgets(TOKEN, sizeof TOKEN, fp);
-  fclose(fp);
+  {
+    FILE *fp = fopen("/home/jh/workspace/fxcm/demo_token", "r");
+    fgets(TOKEN, sizeof TOKEN, fp);
+    fclose(fp);
+  }
+
   const std::string HOST { "api-demo.fxcm.com" },
     DATA { "{\"pairs\":[\"EUR/USD\",\"AUD/USD\"]}" };
   std::vector<std::string> H { 
@@ -24,7 +27,7 @@ int main(const int argc, const char *argv[])
   auto cb { [](const std::string &buffer) { std::cout << buffer << std::endl; } };
   SocketIO<HttpsClient> c(1.1, HOST, 443, cb);
   c.connect();
-  c.run(POST, "/subscribe", H, DATA, 250);
+  c.run(POST, "/subscribe", H, DATA, 250, 250 * 8);
   while (1); 
   return 0;
 }

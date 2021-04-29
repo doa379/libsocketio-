@@ -22,10 +22,16 @@ bool SocketIO<T>::connect(void)
 }
 
 template<typename T>
-void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<std::string> &H, const std::string &data, const unsigned waitms)
+void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<std::string> &H, const std::string &data, const unsigned waitms, const int expiry)
 {
+  auto is_running { [&](void) -> bool {
+      std::lock_guard<std::mutex> lock(mtx);
+      return running;
+    }
+  };
+
   th = std::make_unique<std::thread>([&] {
-    while (running)
+    while (is_running() && 1/*time_now - time_init < expiry*/)
     {
       c->sendreq(req, endp, H, data);
       c->recvreq();
@@ -38,5 +44,6 @@ void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<st
 template<typename T>
 void SocketIO<T>::kill(void)
 {
+  std::lock_guard<std::mutex> lock(mtx);
   running = 0;
 }
