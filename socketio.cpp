@@ -1,5 +1,4 @@
 #include <thread>
-#include <chrono>
 #include "socketio.h"
 
 template<typename T>
@@ -30,17 +29,15 @@ void SocketIO<T>::run(REQUEST req, const std::string &endp, const std::vector<st
     }
   };
 
-  auto now { std::chrono::system_clock::now() };
-  auto init_ms { std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) },
-    now_ms = init_ms;
-  while (is_running() && (expiry < 0 || now_ms.count() - init_ms.count() < expiry))
+  const auto init { c->now() };
+  auto now { init };
+  while (is_running() && (expiry < 0 || c->difftime(now, init) < (unsigned) expiry))
   {
     c->sendreq(req, endp, H, data);
     c->recvreq();
     cb(c->get_response());
     std::this_thread::sleep_for(std::chrono::milliseconds(waitms));
-    auto now { std::chrono::system_clock::now() };
-    now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+    now = c->now();
   }
 }
 

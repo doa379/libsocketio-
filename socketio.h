@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <functional>
 #include <memory>
 #include <libsocket++/socket.h>
 #include <mutex>
