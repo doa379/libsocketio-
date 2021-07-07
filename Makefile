@@ -9,7 +9,7 @@ SRC_TEST0 = client_example.cpp
 OBJ_TEST0 = ${SRC_TEST0:.cpp=.o}
 
 CC = c++
-CFLAGS = -std=c++14 -c -Wall -fPIE -fPIC -pedantic -O3 ${INCS}
+CFLAGS = -std=c++17 -c -Wall -fPIE -fPIC -pedantic -O3 ${INCS}
 LDFLAGS += ${LIBSPATH}
 
 all: libsocketio++.so \

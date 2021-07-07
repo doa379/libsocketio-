@@ -17,7 +17,7 @@ public:
   SocketIO(const float, const std::string &, const unsigned, const Cb &);
   ~SocketIO(void);
   bool connect(void);
-  void run(REQUEST, const std::string &, const std::vector<std::string> &, const std::string &, const unsigned, const int = -1);
+  void run(REQ, const std::string &, const std::vector<std::string> &, const std::string &, const unsigned, const int = -1);
   void kill(void);
 };
 
